@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LMS - Pharmacy and Purchases</title>
+    <link rel="stylesheet"  href="{{ url_for('static', filename='css/index.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>LMS - Pharmacy and Purchases</h1>
+        
+        <!-- Medicine Table -->
+        <section class="table-section">
+            <h2>Medicines</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Medicine ID</th>
+                        <th>Name</th>
+                        <th>Cost</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for medicine in medicines %}
+                    <tr>
+                        <td>{{ medicine[0] }}</td>
+                        <td>{{ medicine[1] }}</td>
+                        <td>{{ medicine[2] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+        
+        <hr>
+
+        <!-- Customer Purchased Medicines Table -->
+        <section class="table-section">
+            <h2>Customer Purchases</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Customer ID</th>
+                        <th>Customer Name</th>
+                        <th>Medicines</th>
+                        <th>Total Cost</th>
+                        <th>Date Bought</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for purchase in customer_purchases %}
+                    <tr>
+                        <td>{{ purchase.customer_id }}</td>
+                        <td>{{ purchase.full_name }}</td>
+                        <td>
+                            {% for medicine in purchase.medicines %}
+                                <p>{{ medicine.medicine_name }} (x{{ medicine.quantity }}) - ₱{{ "%.2f"|format(medicine.medicine_cost) }}</p>
+                            {% endfor %}
+                        </td>
+                        <td>₱{{ "%.2f"|format(purchase.total_cost) }}</td>
+                        <td>{{ purchase.purchase_date }}</td>
+                        <td>
+                            <form action="{{ url_for('send_to_billing', customer_id=purchase.customer_id) }}" method="POST">
+                                <button type="submit">Send to Billing</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>            
+        </section>
+    </div>
+</body>
+</html>
